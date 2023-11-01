@@ -2,9 +2,9 @@ use eventsource_client::{BoxStream, SSE};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::{api, error};
+use crate::api;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Model {
     ChatGLM130b(ChatGLMInvokeParam),
     ChatGLM6b(ChatGLMInvokeParam),
@@ -90,13 +90,13 @@ pub trait InvokeParam {
     fn json(&self) -> serde_json::Value;
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GlmRef {
     pub enable: bool,
     pub query: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatGLMInvokeParam {
     pub prompt: serde_json::Value,
     pub top_p: f64,
@@ -129,7 +129,7 @@ impl InvokeParam for ChatGLMInvokeParam {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CharacterGLMMeta {
     pub user_info: String,
     pub bot_info: String,
@@ -137,7 +137,7 @@ pub struct CharacterGLMMeta {
     pub user_name: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CharacterGLMInvokeParam {
     pub prompt: serde_json::Value,
     pub meta: CharacterGLMMeta,
@@ -172,7 +172,7 @@ impl InvokeParam for CharacterGLMInvokeParam {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TextEmbeddingInvokeParam {
     pub prompt: String,
     pub request_id: Option<String>,

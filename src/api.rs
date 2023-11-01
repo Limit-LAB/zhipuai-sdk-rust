@@ -4,9 +4,10 @@ use crate::{
     utils,
 };
 use eventsource_client::{Client, SSE, BoxStream};
+use serde::{Serialize, Deserialize};
 use std::fmt::Display;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum InvokeType {
     Invoke,
     AsyncInvoke,
@@ -45,7 +46,7 @@ pub async fn http_invoke<T: InvokeParam>(
     invoke_param: &T,
 ) -> Result<serde_json::Value, APIError> {
     let api_key = std::env::var("ZHIPUAI_API_KEY").expect("ZHIPUAI_API_KEY is not set");
-    let url = crate::utils::build_api_url(model, InvokeType::SSE);
+    let url = crate::utils::build_api_url(model, InvokeType::Invoke);
     let token = utils::create_jwt_token(&api_key, std::time::Duration::from_secs(10000)).unwrap();
     let client = reqwest::Client::new();
     if let Ok(resp) = client

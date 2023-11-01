@@ -16,11 +16,11 @@ async fn main() {
     let model = zhipuai_sdk_rust::models::Model::ChatGLM6b(invoke_param);
 
     let result = model.invoke(InvokeType::SSE).await;
-    if let zhipuai_sdk_rust::models::InvokeResult::SSE(mut stream) = result {
+    if let zhipuai_sdk_rust::models::InvokeResult::HTTP(result) = result {
+        println!("{:?}", result);
+    } else if let zhipuai_sdk_rust::models::InvokeResult::SSE(mut stream) = result {
         while let Some(event) = stream.try_next().await.unwrap() {
-            println!("event: {:?}", event);
+            println!("{:?}", event);
         }
-    } else {
-        
     }
 }
