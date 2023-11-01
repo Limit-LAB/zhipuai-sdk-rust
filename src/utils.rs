@@ -4,7 +4,7 @@ use jwt::{SigningAlgorithm, ToBase64};
 use serde_json::json;
 use sha2::Sha256;
 
-use crate::{api::InvokeType, model::ModelType};
+use crate::{api::InvokeType, models::Model};
 
 pub fn create_jwt_token(api_key: &str, expire: std::time::Duration) -> Result<String> {
     let sp = api_key.split('.').collect::<Vec<_>>();
@@ -35,7 +35,7 @@ pub fn create_jwt_token(api_key: &str, expire: std::time::Duration) -> Result<St
     Ok(token_string)
 }
 
-pub fn build_api_url(model: ModelType ,invoke_type: InvokeType) -> String {
+pub fn build_api_url(model: &Model ,invoke_type: InvokeType) -> String {
     let api_base = std::env::var("ZHIPUAI_MODEL_API_URL")
         .unwrap_or_else(|_| crate::ZHIPUAI_MODEL_DEAULT_API_URL.to_string());
     let api_url = format!("{}/{}/{}", api_base, model, invoke_type);

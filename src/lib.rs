@@ -1,5 +1,5 @@
 pub mod utils;
-pub mod model;
+pub mod models;
 pub mod api;
 pub mod error;
 
