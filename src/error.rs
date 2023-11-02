@@ -2,7 +2,7 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum SEESessionError {
-
+    
 }
 
 #[derive(Error, Debug)]

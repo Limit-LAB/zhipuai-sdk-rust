@@ -1,6 +1,6 @@
 use crate::{
     error::APIError,
-    models::{InvokeParam, Model},
+    models::Model,
     utils,
 };
 use eventsource_client::{Client, SSE, BoxStream};
@@ -24,7 +24,7 @@ impl Display for InvokeType {
     }
 }
 
-pub async fn sse_invoke<T: InvokeParam>(model: &Model, invoke_param: &T) -> Result<BoxStream<eventsource_client::Result<SSE>>, APIError>{
+pub async fn sse_invoke(model: &Model, body: &serde_json::Value,) -> Result<BoxStream<eventsource_client::Result<SSE>>, APIError>{
     let api_key = std::env::var("ZHIPUAI_API_KEY").expect("ZHIPUAI_API_KEY is not set");
     let url = crate::utils::build_api_url(model, InvokeType::SSE);
     let token = utils::create_jwt_token(&api_key, std::time::Duration::from_secs(10000)).unwrap();
@@ -35,15 +35,15 @@ pub async fn sse_invoke<T: InvokeParam>(model: &Model, invoke_param: &T) -> Resu
         .header("Content-Type", "application/json; charset=UTF-8")
         .unwrap()
         .method("POST".to_string())
-        .body(serde_json::to_string(&invoke_param.json()).unwrap())
+        .body(serde_json::to_string(body).unwrap())
         .build();
 
     Ok(client.stream())
 }
 
-pub async fn http_invoke<T: InvokeParam>(
+pub async fn invoke(
     model: &Model,
-    invoke_param: &T,
+    body: &serde_json::Value,
 ) -> Result<serde_json::Value, APIError> {
     let api_key = std::env::var("ZHIPUAI_API_KEY").expect("ZHIPUAI_API_KEY is not set");
     let url = crate::utils::build_api_url(model, InvokeType::Invoke);
@@ -53,7 +53,7 @@ pub async fn http_invoke<T: InvokeParam>(
         .post(&url)
         .header("Authorization", &token)
         .header("Content-Type", "application/json; charset=UTF-8")
-        .body(serde_json::to_string(&invoke_param.json()).unwrap())
+        .body(serde_json::to_string(body).unwrap())
         .send()
         .await
     {
