@@ -42,7 +42,13 @@ impl std::fmt::Display for Model {
 impl Model {
     pub async fn invoke<T: InvokeParam>(&self, invoke_meta: InvokeMeta<T>) -> serde_json::Value {
         let body = invoke_meta.request_body();
-        api::invoke(self, &body).await.unwrap()
+        match api::invoke(self, &body).await {
+            Ok(res) => res,
+            Err(e) => {
+                panic!("invoke error: {}", e)
+            }
+        }
+        
     }
     
     // TODO: SSE has no meta
@@ -63,6 +69,12 @@ pub trait InvokeParam {
 pub struct InvokeMeta<T: InvokeParam> {
     pub prompt: serde_json::Value,
     pub invoke_param: T,
+}
+
+impl InvokeParam for serde_json::Value {
+    fn json(&self) -> serde_json::Value {
+        self.clone()
+    }
 }
 
 impl<T: InvokeParam> InvokeMeta<T> {
