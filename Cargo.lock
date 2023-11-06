@@ -187,8 +187,7 @@ dependencies = [
 [[package]]
 name = "eventsource-client"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b91e5ec5c794bbec5f639620f0bafe421b6d27dec66ac1ce3fdb6f009db3a6c"
+source = "git+https://github.com/Limit-LAB/rust-eventsource-client.git#ec654bd0cdf64ce02e4cd9ab5929ff7073dbcb05"
 dependencies = [
  "futures",
  "hyper",
